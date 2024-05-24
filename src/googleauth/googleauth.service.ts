@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
-export class AuthService {
+export class GoogleAuthService {
   constructor(private jwtService: JwtService) {}
 
   async validateOAuthLogin(user: any): Promise<string> {

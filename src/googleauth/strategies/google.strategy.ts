@@ -10,14 +10,14 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     super({
       clientID: configService.get<string>('GOOGLE_CLIENT_ID'),
       clientSecret: configService.get<string>('GOOGLE_CLIENT_SECRET'),
-       callbackURL: 'http://localhost:3000/auth/google/callback',//http://localhost:3000/api/auth/callback/google
-      scope: ['profile', 'email', 'https://www.googleapis.com/auth/calendar.readonly'],
+       callbackURL: configService.get<string>('GOOGLE_CALLBACK_URI'),//http://localhost:3000/api/auth/callback/google
+      scope: ['profile', 'email', 'openid https://www.googleapis.com/auth/calendar.readonly'],
     });
   }
 
   async validate(accessToken: string, refreshToken: string, profile: any, done: VerifyCallback): Promise<any> {
     const { name, emails, photos } = profile;
-    const user = {
+    const googleuser = {
       email: emails[0].value,
       firstName: name.givenName,
       lastName: name.familyName,
@@ -25,6 +25,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       accessToken,
     };
     
-    done(null, user);
+    done(null, googleuser);
   }
 }

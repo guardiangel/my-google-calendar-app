@@ -25,24 +25,21 @@
 
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AuthModule } from './auth/auth.module';
-import { CalendarModule } from './calendar/calendar.module';
-import { AuthController } from './auth/auth.controller';
-import { AuthService } from './auth/auth.service';
+import { GoogleAuthModule } from './googleauth/googleauth.module';
+import { GoogleAuthController } from './googleauth/googleauth.controller';
+import { GoogleAuthService } from './googleauth/googleauth.service';
 import { JwtService } from '@nestjs/jwt';
-import { CalendarController } from './calendar/calendar.controller';
-import { CalendarService } from './calendar/calendar.service';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    AuthModule,
-    CalendarModule,
+    GoogleAuthModule,
+    
   ],
-  controllers: [AuthController,CalendarController ],
-  providers: [AuthService, JwtService,CalendarService],
+  controllers: [GoogleAuthController ],
+  providers: [GoogleAuthService, JwtService],
 })
 export class AppModule {}
 
