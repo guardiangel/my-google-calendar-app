@@ -26,6 +26,7 @@
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.3.8",
+    "axios": "^1.7.2",
     "googleapis": "^137.1.0",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
