@@ -20,6 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@azure/msal-node": "^2.9.0",
     "@nestjs/common": "^10.3.8",
     "@nestjs/config": "^3.2.2",
     "@nestjs/core": "^10.3.8",
@@ -28,6 +29,7 @@
     "@nestjs/platform-express": "^10.3.8",
     "axios": "^1.7.2",
     "googleapis": "^137.1.0",
+    "msal-node": "^0.0.1-security",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "reflect-metadata": "^0.2.2",

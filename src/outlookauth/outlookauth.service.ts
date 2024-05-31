@@ -1,30 +1,54 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
+import * as msal from '@azure/msal-node';
+import { ConfigService } from '@nestjs/config';
 @Injectable()
-export class OutLookService {
-  private readonly clientId = '94f8032b-3792-41ac-bf28-481629d57a0f';
-  // private readonly tenantId = '54ae6b24-5c24-4e13-9730-4dcd5d24f5a7';
-  private readonly tenantId = '54ae6b24-5c24-4e13-9730-4dcd5d24f5a7';
-  private readonly clientSecret = 'a0e8Q~qbMtV_o42C6Cuh.CHd1IKM84GA~cEVJchD';
-  private readonly scope = 'https://graph.microsoft.com/.default';
-  private readonly tokenEndpoint = `https://login.microsoftonline.com/${this.tenantId}/oauth2/v2.0/token`;
-  // private readonly tokenEndpoint = `https://login.microsoftonline.com/common/oauth2/v2.0/token`;
+export class OutAuthLookService {
 
-  async getAccessToken(): Promise<string> {
-
-        let   response = await axios.post(this.tokenEndpoint, 
-                {grant_type: 'client_credentials',
-                client_id: this.clientId,
-                client_secret: this.clientSecret,
-                scope: this.scope,
-              },{
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-              }}
-        );
-
-  
-
-    return response.data.access_token;
+  private msalClient: msal.ConfidentialClientApplication;
+  constructor(private configService: ConfigService) {
+    this.msalClient = new msal.ConfidentialClientApplication({
+      auth: {
+        clientId: this.configService.get<string>('AZURE_CLIENT_ID'),
+        clientSecret: this.configService.get<string>('AZURE_CLIENT_SECRET'),
+        authority: `https://login.microsoftonline.com/common`,
+      },
+    });
   }
+
+  getAuthUrl(): Promise<string> {
+    const authCodeUrlParameters = {
+      scopes: this.configService.get<string>('AZURE_SCOPES').split(' '),
+      redirectUri: this.configService.get<string>('AZURE_REDIRECT_URI'),
+    };
+
+    return this.msalClient.getAuthCodeUrl(authCodeUrlParameters);
+  }
+
+  async getToken(authCode: string): Promise<string> {
+    const tokenRequest = {
+      code: authCode,
+      scopes: this.configService.get<string>('AZURE_SCOPES').split(' '),
+      redirectUri: this.configService.get<string>('AZURE_REDIRECT_URI'),
+    };
+
+    const response = await this.msalClient.acquireTokenByCode(tokenRequest);
+    if (response && response.accessToken) {
+      return response.accessToken;
+    } else {
+      throw new Error('Could not acquire access token');
+    }
+  }
+
+  async getCalendarEvents(accessToken: string): Promise<any> {
+    const response = await axios.get('https://graph.microsoft.com/v1.0/me/events', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    return response.data;
+  }
+
+
 }

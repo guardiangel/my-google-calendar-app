@@ -30,8 +30,7 @@ import { GoogleAuthController } from './googleauth/googleauth.controller';
 import { GoogleAuthService } from './googleauth/googleauth.service';
 import { JwtService } from '@nestjs/jwt';
 import { OutLookController } from './outlookauth/outlookauth.controller';
-import { OutLookService } from './outlookauth/outlookauth.service';
-import { OutLookGraphService } from './outlookauth/outlookgraph.service';
+import { OutAuthLookService } from './outlookauth/outlookauth.service';
 
 @Module({
   imports: [
@@ -42,7 +41,7 @@ import { OutLookGraphService } from './outlookauth/outlookgraph.service';
     
   ],
   controllers: [GoogleAuthController, OutLookController ],
-  providers: [GoogleAuthService, JwtService, OutLookService, OutLookGraphService],
+  providers: [GoogleAuthService, JwtService, OutAuthLookService],
 })
 export class AppModule {}
 
