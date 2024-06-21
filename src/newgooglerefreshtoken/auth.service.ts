@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { google } from 'googleapis';
 import { googleConfig } from './config';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -8,7 +10,7 @@ export class AuthService {
 
   private oauth2Client: any;
 
-  constructor() {
+  constructor(private readonly httpService: HttpService) {
     this. oauth2Client = new google.auth.OAuth2(
       googleConfig.clientId,
       googleConfig.clientSecret,
@@ -33,6 +35,30 @@ export class AuthService {
 
   async getToken(code: string) {
     const { tokens } = await this.oauth2Client.getToken(code);
+
+    // const access_token = tokens.id_token;
+    // try {
+    //   const ticket = await this.oauth2Client.verifyIdToken({
+    //     idToken: access_token,
+    //     audience:  googleConfig.clientId,
+    //   });
+    //   const payload = ticket.getPayload();
+
+    //   console.log("AuthService getToken payload", payload);
+    // } catch (error) {
+    //   console.log("AuthService getToken error",error);
+    //   throw new Error('AuthService Invalid token');
+    // }
+
+    const url = `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${tokens.access_token}`;
+    try {
+      const response = await firstValueFrom(this.httpService.get(url));
+     console.log("response.data==", response.status)
+    } catch (error) {
+      console.log("response error", error);
+      throw new Error('Invalid access token');
+    }
+
     return tokens;
   }
 

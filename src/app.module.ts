@@ -33,17 +33,17 @@ import { OutLookController } from './outlookauth/outlookauth.controller';
 import { OutAuthLookService } from './outlookauth/outlookauth.service';
 import { GoogleStrategy } from './googleauth/strategies/google.strategy';
 import { PassportModule } from '@nestjs/passport';
+import { AuthModule } from './newgooglerefreshtoken/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    GoogleAuthModule,
-    PassportModule.register({ defaultStrategy: 'google' })
+    AuthModule
   ],
-  controllers: [GoogleAuthController, OutLookController ],
-  providers: [GoogleAuthService, JwtService, OutAuthLookService, GoogleStrategy],
+  controllers: [ ],
+  providers: [],
 })
 export class AppModule {}
 

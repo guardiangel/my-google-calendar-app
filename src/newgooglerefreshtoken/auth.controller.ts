@@ -1,6 +1,7 @@
 import { Controller, Get, Query, Redirect } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { google } from 'googleapis';
+import { decode, JwtPayload } from 'jsonwebtoken';
 
 @Controller('googleauth')
 export class AuthController {
@@ -17,7 +18,13 @@ export class AuthController {
   @Get('google/callback')
   async googleAuthCallback(@Query('code') code: string) {
     const tokens = await this.authService.getToken(code);
-    console.log("token***********", tokens)
+    const jwtPayload = decode(tokens.id_token) as JwtPayload;
+    //const email = jwtPayload?.email;
+    //console.log("AuthController token***********", tokens)
+    //console.log("AuthController email=============", email);
+
+    
+
     return tokens;
   }
 
