@@ -31,6 +31,8 @@ import { GoogleAuthService } from './googleauth/googleauth.service';
 import { JwtService } from '@nestjs/jwt';
 import { OutLookController } from './outlookauth/outlookauth.controller';
 import { OutAuthLookService } from './outlookauth/outlookauth.service';
+import { GoogleStrategy } from './googleauth/strategies/google.strategy';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
@@ -38,10 +40,10 @@ import { OutAuthLookService } from './outlookauth/outlookauth.service';
       isGlobal: true,
     }),
     GoogleAuthModule,
-    
+    PassportModule.register({ defaultStrategy: 'google' })
   ],
   controllers: [GoogleAuthController, OutLookController ],
-  providers: [GoogleAuthService, JwtService, OutAuthLookService],
+  providers: [GoogleAuthService, JwtService, OutAuthLookService, GoogleStrategy],
 })
 export class AppModule {}
 
